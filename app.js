@@ -632,6 +632,8 @@
               <option value="Courier New" ${layer.fontFamily === 'Courier New' ? 'selected' : ''}>Courier New</option>
             </optgroup>
             <optgroup label="Display & Handwriting">
+              <option value="Impact" ${layer.fontFamily === 'Impact' ? 'selected' : ''}>Impact</option>
+              <option value="Anton" ${layer.fontFamily === 'Anton' ? 'selected' : ''}>Anton</option>
               <option value="Lobster" ${layer.fontFamily === 'Lobster' ? 'selected' : ''}>Lobster</option>
               <option value="Bebas Neue" ${layer.fontFamily === 'Bebas Neue' ? 'selected' : ''}>Bebas Neue</option>
               <option value="Pacifico" ${layer.fontFamily === 'Pacifico' ? 'selected' : ''}>Pacifico</option>
