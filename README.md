@@ -1,8 +1,8 @@
-# 🎞️ GIF Editor
+# GIF Editor
 
 A lightweight, powerful, and pure browser-based GIF editor. No server-side processing required—everything happens locally in your browser.
 
-## ✨ Features
+## Features
 
 - **Drag & Drop Upload**: Easily upload any `.gif` file.
 - **Frame Trimming & Scrubbing**: Navigate through frames and choose exactly what part of the GIF to keep.
@@ -13,7 +13,7 @@ A lightweight, powerful, and pure browser-based GIF editor. No server-side proce
 - **High-Quality Export**: Preserves original frame delays and applies all edits to the final rendered GIF.
 - **GitHub Pages Ready**: Optimized for static hosting.
 
-## 🚀 Getting Started
+## Getting Started
 
 Simply open `index.html` in a modern web browser. 
 
@@ -23,7 +23,7 @@ For the best experience (and to avoid potential local file restrictions for web 
 npx serve .
 ```
 
-## 🛠️ Built With
+## Built With
 
 - **HTML5 Canvas**: For frame processing and text rendering.
 - **Vanilla CSS**: Clean, minimal, and responsive UI.
@@ -31,6 +31,6 @@ npx serve .
 - **[omggif](https://github.com/deanm/omggif)**: GIF decoding and frame parsing.
 - **[gif.js](https://github.com/jnordberg/gif.js)**: High-performance GIF encoding.
 
-## ⚖️ License
+## License
 
 This project is licensed under the [GNU General Public License v3.0](LICENSE).
