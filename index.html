@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GIF Editor</title>
+  <meta name="description"
+    content="A browser-based GIF editor with frame trimming, text overlays, filters, padding, and export.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;700&family=Outfit:wght@400;700&family=Poppins:wght@400;700&family=Montserrat:wght@400;700&family=Playfair+Display:wght@400;700&family=Lobster&family=Bebas+Neue&family=Pacifico&family=Oswald:wght@400;700&family=Raleway:wght@400;700&family=Permanent+Marker&family=Caveat:wght@400;700&family=Bangers&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+  <!-- Loading Spinner Overlay -->
+  <div id="loading-overlay" class="hidden">
+    <div class="spinner"></div>
+    <p>Parsing GIF…</p>
+  </div>
+
+  <header>
+    <h1>🎞️ GIF Editor</h1>
+    <p class="subtitle">Upload, edit, and export — entirely in your browser</p>
+  </header>
+
+  <main>
+    <!-- Upload Zone -->
+    <section id="upload-section">
+      <div id="drop-zone" tabindex="0">
+        <div class="drop-zone-content">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+          <p>Drag & drop a <strong>.gif</strong> file here</p>
+          <span class="or-divider">or</span>
+          <label class="file-btn" for="file-input">Choose File</label>
+          <input type="file" id="file-input" accept=".gif,image/gif" hidden>
+        </div>
+      </div>
+    </section>
+
+    <!-- Preview + Metadata -->
+    <section id="preview-section" class="hidden">
+      <div class="canvas-wrapper">
+        <canvas id="preview-canvas"></canvas>
+      </div>
+      <div id="metadata" class="meta-bar">
+        <span id="meta-dimensions"></span>
+        <span id="meta-frames"></span>
+        <span id="meta-size"></span>
+      </div>
+    </section>
+
+    <!-- Controls (only shown after upload) -->
+    <div id="controls" class="hidden">
+
+      <!-- Trim Section -->
+      <details class="control-section" open>
+        <summary>Trim & Scrub</summary>
+        <div class="section-body">
+          <div class="scrubber-row">
+            <button id="play-pause-btn" title="Play / Pause">▶</button>
+            <input type="range" id="frame-scrubber" min="0" max="0" value="0" step="1">
+            <span id="frame-indicator">Frame 0 / 0</span>
+          </div>
+          <div class="trim-row">
+            <label>Start Frame
+              <input type="number" id="trim-start" min="0" value="0">
+            </label>
+            <label>End Frame
+              <input type="number" id="trim-end" min="0" value="0">
+            </label>
+          </div>
+        </div>
+      </details>
+
+      <!-- Text Layers Section -->
+      <details class="control-section">
+        <summary>Text Layers</summary>
+        <div class="section-body">
+          <button id="add-text-btn" class="action-btn">+ Add Text Layer</button>
+          <div id="text-layers-container"></div>
+        </div>
+      </details>
+
+      <!-- Filters Section -->
+      <details class="control-section">
+        <summary>Filters</summary>
+        <div class="section-body" id="filters-body">
+          <div class="filter-row">
+            <label>Brightness <span id="brightness-val">100</span>%</label>
+            <input type="range" id="filter-brightness" min="0" max="200" value="100">
+            <button class="reset-btn" data-filter="brightness" title="Reset">↺</button>
+          </div>
+          <div class="filter-row">
+            <label>Contrast <span id="contrast-val">100</span>%</label>
+            <input type="range" id="filter-contrast" min="0" max="200" value="100">
+            <button class="reset-btn" data-filter="contrast" title="Reset">↺</button>
+          </div>
+          <div class="filter-row">
+            <label>Saturation <span id="saturation-val">100</span>%</label>
+            <input type="range" id="filter-saturation" min="0" max="200" value="100">
+            <button class="reset-btn" data-filter="saturation" title="Reset">↺</button>
+          </div>
+          <div class="filter-row">
+            <label>Grayscale <span id="grayscale-val">0</span>%</label>
+            <input type="range" id="filter-grayscale" min="0" max="100" value="0">
+            <button class="reset-btn" data-filter="grayscale" title="Reset">↺</button>
+          </div>
+          <div class="filter-row">
+            <label>Sepia <span id="sepia-val">0</span>%</label>
+            <input type="range" id="filter-sepia" min="0" max="100" value="0">
+            <button class="reset-btn" data-filter="sepia" title="Reset">↺</button>
+          </div>
+          <div class="filter-row">
+            <label>Invert <span id="invert-val">0</span>%</label>
+            <input type="range" id="filter-invert" min="0" max="100" value="0">
+            <button class="reset-btn" data-filter="invert" title="Reset">↺</button>
+          </div>
+        </div>
+      </details>
+
+      <!-- Spacing Section -->
+      <details class="control-section">
+        <summary>Spacing & Padding</summary>
+        <div class="section-body">
+          <div class="padding-row">
+            <label>Top <span id="pad-top-val">0</span>px
+              <input type="range" id="pad-top" min="0" max="200" value="0">
+            </label>
+          </div>
+          <div class="padding-row">
+            <label>Right <span id="pad-right-val">0</span>px
+              <input type="range" id="pad-right" min="0" max="200" value="0">
+            </label>
+          </div>
+          <div class="padding-row">
+            <label>Bottom <span id="pad-bottom-val">0</span>px
+              <input type="range" id="pad-bottom" min="0" max="200" value="0">
+            </label>
+          </div>
+          <div class="padding-row">
+            <label>Left <span id="pad-left-val">0</span>px
+              <input type="range" id="pad-left" min="0" max="200" value="0">
+            </label>
+          </div>
+          <div class="padding-row color-row">
+            <label>Background Color
+              <input type="color" id="pad-color" value="#ffffff">
+            </label>
+          </div>
+        </div>
+      </details>
+
+      <!-- Export Section -->
+      <details class="control-section" open>
+        <summary>Export</summary>
+        <div class="section-body">
+          <button id="download-btn" class="action-btn primary" disabled>Download GIF</button>
+          <div id="progress-container" class="hidden">
+            <div id="progress-bar"></div>
+            <span id="progress-text">0%</span>
+          </div>
+        </div>
+      </details>
+
+    </div><!-- /controls -->
+  </main>
+
+  <!-- Libraries -->
+  <script src="https://unpkg.com/omggif@1.0.10/omggif.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
